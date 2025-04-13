@@ -5,7 +5,7 @@ import os
 
 CSV_FILE="expense.csv"
 
-if not os.path.exists(CSV_FILE):
+if os.path.exists(CSV_FILE):
      with open(CSV_FILE, mode='w', newline="") as f:
           writer=csv.DictWriter(f,fieldnames=["ID","Description","Amount"])
           writer.writeheader()
@@ -91,5 +91,9 @@ delete_parser=subparsers.add_parser("delete",help="deletes transaction")
 delete_parser.add_argument("--id",required=True,help="Id of record to be deleted", type=int)
 delete_parser.set_defaults(func=delete_expense)
 
-args=parser.parse_args()
-args.func(args)
+args = parser.parse_args()
+
+if hasattr(args, 'func'):
+    args.func(args)
+else:
+    parser.print_help()
