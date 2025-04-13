@@ -1,33 +1,70 @@
 import argparse
-import datetime
+import csv
+import os
 
-expenses=[]
-expense_id=1
+
+CSV_FILE="expense.csv"
+
+if not os.path.exists(CSV_FILE):
+     with open(CSV_FILE, mode='w', newline="") as f:
+          writer=csv.DictWriter(f,fieldnames=["ID","Description","Amount"])
+          writer.writeheader()
+
+def get_next_id():
+    try:
+        with open(CSV_FILE, mode="r", newline="") as f:
+            reader = csv.DictReader(f)
+            rows = list(reader)
+            if rows:
+                return int(rows[-1]["ID"]) + 1
+    except FileNotFoundError:
+        pass
+    return 1
+
+
+def read_expense():
+     with open(CSV_FILE, mode='r', newline="") as f:
+          reader=csv.DictReader(f)
+          return list(reader)
+     
+def write_expenses(expenses):
+    with open(CSV_FILE, mode="w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=["ID", "Description", "Amount"])
+        writer.writeheader()
+        writer.writerows(expenses)
 
 def add_expense(args):
-      global expense_id
-      expenses.append({"id": expense_id, 
+      
+      new_expense={"ID": str(get_next_id()), 
                        "Description": args.description, 
-                       "Amount":args.amount})
+                       "Amount":args.amount}
+      with open(CSV_FILE, mode='a',newline="") as f:
+           writer=csv.DictWriter(f,fieldnames=["ID","Description","Amount"])
+           writer.writerow(new_expense)
       print("Expense Added successfully")
-      expense_id+=1
 
 def list_view(args):
-     print("ID  Description   Amount")
-     for exp in expenses:
-          print(f"{exp['id']}  {exp['Description']}  \u20B9{exp['Amount']}")
+    expenses = read_expense()
+    print(f"{'ID':<5} {'Description':<20} {'Amount (₹)':>10}")
+    print("-" * 40)
+    for exp in expenses:
+        print(f"{exp['ID']:<5} {exp['Description']:<20} {exp['Amount']:>5}")
 
 def summary(args):
+    expenses = read_expense()
     total=0
     for exp in expenses:
-         total+=exp['Amount']
+         total+=int(exp['Amount'])
     print(f"Total Amount: \u20B9{total}")
 
 def delete_expense(args):
-    for exp in expenses:
-         if exp['id']==args.id:
-              list.remove(exp)
-    print("Expense removed successfully")
+    expenses = read_expense()
+    updated_expense=[exp for exp in expenses if int(exp["ID"])!=args.id]
+    if len(expenses)==len(updated_expense):
+        print("No expense found")
+    else:
+        write_expenses(updated_expense)
+        print("Expense removed successfully")
 
 
 
@@ -38,7 +75,7 @@ subparsers=parser.add_subparsers(dest="command")
 # add parser
 add_parser= subparsers.add_parser("add", help="adds new Expense")
 add_parser.add_argument("--description", required=True, help="Expense description")
-add_parser.add_argument("--amount", required=True, type=float, help="Amount to be added")
+add_parser.add_argument("--amount", required=True, type=int, help="Amount to be added")
 add_parser.set_defaults(func=add_expense)
 
 #list parser
