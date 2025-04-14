@@ -14,6 +14,12 @@ A simple command-line interface (CLI) expense tracker built with Python. You can
 
 ## 📁 Project Structure
 
+```
+CLI_expense_tracker/
+├── expense.csv         # Stores the data
+├── main.py             # Main application script
+```
+
 ---
 
 ## 📦 Requirements
