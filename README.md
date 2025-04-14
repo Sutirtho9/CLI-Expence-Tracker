@@ -2,7 +2,6 @@
 
 A simple command-line interface (CLI) expense tracker built with Python. You can add, view, summarize, and delete your expenses using intuitive commands. Data is stored in a CSV file.
 
-[project roadmap](https://roadmap.sh/projects/expense-tracker)
 ---
 
 ## 🚀 Features
