@@ -99,7 +99,7 @@ subparsers=parser.add_subparsers(dest="command")
 # add parser
 add_parser= subparsers.add_parser("add", help="adds new Expense")
 add_parser.add_argument("--category","-c", required=True, help="Expense description")
-add_parser.add_argument("--date","-d", required=True,type=valid_date, help="Expense date in YYYY/MM/DD")
+add_parser.add_argument("--date","-d", required=True,type=valid_date, help="Expense date in YYYY-MM-DD")
 add_parser.add_argument("--amount","-a", required=True, type=int, help="Amount to be added")
 add_parser.set_defaults(func=add_expense)
 
